@@ -1,4 +1,4 @@
-![Foto Bob Esponja](https://i.imgur.com/JhboIM4.png)
+![Cena do Bob Esponja em OpenGL, com o braço esquerdo acenando](docs/preview.png)
 
 # OpenGLSpongeBob
 
