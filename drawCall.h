@@ -20,6 +20,7 @@ void Draw() {
 	GraphicsObjectsRender();
 	
 	glPopMatrix ();
+	DrawControlsHUD();												// PAINEL DE CONTROLES (tecla H alterna)
 	
 	glutSwapBuffers (); 											// ATUALIZAR O BUFFER
     PositionViewportDisplay();

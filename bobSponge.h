@@ -551,119 +551,110 @@ void DrawSpongeBobEye(float offsetX, float offsetY, float offsetZ) {
 		DrawSpongeBobEyeLashes( 2.5, 0, 0);
 }
 
-// ----------------------------------- DRAW ARM SCRIPT -----------------------------------------------
+// ----------------------------------- ARM SCRIPT -----------------------------------------------------
+//
+// O braco e montado como uma cadeia articulada: ombro -> braco -> cotovelo -> antebraco -> pulso -> mao com dedos.
+// Cada junta gira em relacao a anterior, entao o movimento sai natural (sem esticar o cubo, como antes).
 
-void DrawSpongeBobArmNoAnimation(float offsetX, float offsetY, float offsetZ) {
-	// ARM
+#define ARM_SEGMENT_LENGTH 2.75f			// comprimento do braco e do antebraco (juntos 5.5, como o braco original)
+#define ARM_SHOULDER_Z 11.5f				// altura do ombro: no meio da parte branca da camisa (z 10.9 a 12.1)
+#define ARM_SHOULDER_X 3.25f				// o ombro encosta na lateral do corpo (largura da camisa = +-3.0 + meia espessura do braco)
+#define ARM_ANIM_PERIOD_MS 2400.0f			// duracao de um ciclo completo (sobe e desce)
+
+// angulos atuais da animacao, atualizados a cada quadro por AnimateSpongeBobArm()
+float armSwingAngle = 0;					// giro do ombro para fora (0 = braco pendurado ao lado do corpo, 90 = na horizontal, 135 = levantado)
+float armBendAngle = 0;						// dobra do cotovelo
+float armWristAngle = 0;					// balanco do pulso
+float armFingerSpread = 0;					// abertura dos dedos
+
+void DrawArmSegment(float length, float thickness) {
 	glPushMatrix ();
-		glTranslatef (offsetX + 0, offsetY + 0, offsetZ + 11.75);
-		glColor3f(1, 0.95, 0.08);
-		glScalef(1.0f, 1.0f, 11.0f);
-		
-		glutSolidCube(0.5f);
-		
-	glPopMatrix ();
-	
-	glPushMatrix ();
-	
-		glTranslatef (offsetX + 0, offsetY + 0, offsetZ + 14);
-		glColor3f(1, 1, 1);
-		glScalef(2.0f, 2.0f, 2.0f);
-		glutSolidSphere(0.5, 12, 7);
-		
+		glTranslatef (0, 0, length / 2.0f);
+		glScalef(thickness, thickness, length);
+		glutSolidCube(1.0f);
 	glPopMatrix ();
 }
 
-float armPositionX = -3.5;
-float armPositionY = 0;
-float armPositionZ = 11.75;
-
-float armScaleX = 1.0;
-float armScaleY = 1.0;
-float armScaleZ = 11.0;
-
-float armAnimObjectivePosition = 11.75;
-float armAnimObjectiveRotation = 1;
-
-int runningOrBacking = 0;
-
-void DrawSpongeBobArm(float offsetX, float offsetY, float offsetZ) {
-	// ARM
+void DrawArmFinger(float spreadAngle, float length) {
 	glPushMatrix ();
-		glTranslatef (armPositionX, offsetY + armPositionY, offsetZ + armPositionZ);
+		glRotatef(spreadAngle, 0, 1, 0);
+		glTranslatef (0, 0, 0.75f);
+		glPushMatrix ();
+			glScalef(0.22f, 0.22f, length);
+			glTranslatef (0, 0, 0.5f);
+			glutSolidCube(1.0f);
+		glPopMatrix ();
+		glTranslatef (0, 0, length + 0.05f);
+		glutSolidSphere(0.16, 8, 6);
+	glPopMatrix ();
+}
+
+// side = -1 para o braco esquerdo (x negativo) e +1 para o direito. Os angulos giram para fora do corpo.
+// O braco e modelado apontando para cima (+Z); o giro de 180 graus abaixo o deixa pendurado em repouso.
+void DrawSpongeBobArmPose(float shoulderX, float side, float swing, float bend, float wrist, float spread) {
+	glPushMatrix ();
+		glTranslatef (shoulderX, 0, ARM_SHOULDER_Z);
+		glRotatef(180.0f - side * swing, 0, 1, 0);
+
+		// braco (amarelo)
 		glColor3f(1, 0.95, 0.08);
-		glScalef(armScaleX, armScaleY, armScaleZ);
-		
-		glRotatef(armAnimObjectiveRotation, 0, 1, 0);
-		
-		glutSolidCube(0.5f);
-		
-	glPopMatrix ();
-	
-	glPushMatrix ();
-	
-		glTranslatef (offsetX + 0, offsetY + 0, offsetZ + 14);
+		DrawArmSegment(ARM_SEGMENT_LENGTH, 0.5f);
+
+		// cotovelo
+		glTranslatef (0, 0, ARM_SEGMENT_LENGTH);
+		glutSolidSphere(0.3, 10, 7);
+		glRotatef(-side * bend, 0, 1, 0);
+
+		// antebraco
+		DrawArmSegment(ARM_SEGMENT_LENGTH, 0.45f);
+
+		// pulso e mao (branca)
+		glTranslatef (0, 0, ARM_SEGMENT_LENGTH);
+		glRotatef(-side * wrist, 0, 1, 0);
 		glColor3f(1, 1, 1);
-		glScalef(2.0f, 2.0f, 2.0f);
-		glutSolidSphere(0.5, 12, 7);
-		
+
+		glPushMatrix ();
+			glTranslatef (0, 0, 0.35f);
+			glScalef(1.0f, 0.7f, 1.0f);
+			glutSolidSphere(0.65, 12, 8);
+		glPopMatrix ();
+
+		// tres dedos que se abrem + polegar
+		DrawArmFinger(-spread, 0.55f);
+		DrawArmFinger(0, 0.65f);
+		DrawArmFinger(spread, 0.55f);
+
+		glPushMatrix ();
+			glTranslatef (side * 0.55f, 0, 0.35f);
+			glRotatef(side * (35 + spread), 0, 1, 0);
+			glScalef(0.2f, 0.2f, 0.5f);
+			glTranslatef (0, 0, 0.5f);
+			glutSolidCube(1.0f);
+		glPopMatrix ();
 	glPopMatrix ();
+}
+
+// Braco animado: balanca para baixo e volta, dobrando o cotovelo e abrindo os dedos.
+void DrawSpongeBobArm(float offsetX, float offsetY, float offsetZ) {
+	DrawSpongeBobArmPose(offsetX, -1, armSwingAngle, armBendAngle, armWristAngle, armFingerSpread);
+}
+
+// Braco parado: mesma montagem, em pose fixa (levantado, dedos levemente abertos).
+void DrawSpongeBobArmNoAnimation(float offsetX, float offsetY, float offsetZ) {
+	DrawSpongeBobArmPose(offsetX, 1, 0, 0, 0, 12);
 }
 
 // ----------------------------------- ARM ANIMATION ------------------------------------------------
 
+// A pose vem do tempo decorrido (e nao de um contador por quadro), entao a velocidade e a mesma em qualquer taxa de quadros.
 void AnimateSpongeBobArm() {
-	
-	if (runningOrBacking == 0) {
-		armAnimObjectiveRotation += 1;
-		
-		if (armAnimObjectiveRotation >= 90) {
-			armPositionX -= 0.02;
-			armPositionZ += 0.01;
-			
-			armScaleX -= 0.12;
-			armScaleZ += 0.06;
-			
-			
-		} else {
-			armScaleX += 0.22;
-			armScaleZ -= 0.12;
-			
-			armPositionX -= 0.01;
-			armPositionZ += 0.025;
-			
-		}
-		
-		if (armAnimObjectiveRotation >= 135.0) {
-			runningOrBacking = 1;
-		}
-		
-	} else {
-		armAnimObjectiveRotation -= 1;
-		
-		if (armAnimObjectiveRotation >= 90) {
-			armPositionX += 0.02;
-			armPositionZ -= 0.01;
-			
-			armScaleX += 0.12;
-			armScaleZ -= 0.06;
-			
-			
-		} else {
-			armScaleX -= 0.22;
-			armScaleZ += 0.12;
-			
-			armPositionX += 0.01;
-			armPositionZ -= 0.025;
-		}
-		
-		
-		
-		if (armAnimObjectiveRotation == 1.0) {
-			runningOrBacking = 0;
-		}
-	}
-	
+	float t = glutGet(GLUT_ELAPSED_TIME);
+	float phase = 0.5f - 0.5f * cosf(2.0f * 3.14159265f * t / ARM_ANIM_PERIOD_MS);	// 0 -> 1 -> 0, suave nas pontas
+
+	armSwingAngle = 135.0f * phase;
+	armBendAngle = 40.0f * phase * phase;
+	armWristAngle = 14.0f * phase * sinf(2.0f * 3.14159265f * t / 600.0f);
+	armFingerSpread = 12.0f + 14.0f * phase;
 }
 
 
@@ -686,8 +677,8 @@ void BobEsponjaScriptDraw(float offsetX, float offsetY, float offsetZ) {
 	BobSpongeLegScript( -1.5, 0, 0);
 	BobSpongeLegScript( 1.5, 0, 0);
 	DrawSpongeBobBody( 0, 0.5, 9.2);
-	DrawSpongeBobArm( -3.5, 0, 0);
-	DrawSpongeBobArmNoAnimation(3.5, 0, 0);
+	DrawSpongeBobArm( -ARM_SHOULDER_X, 0, 0);
+	DrawSpongeBobArmNoAnimation(ARM_SHOULDER_X, 0, 0);
 	DrawSpongeBobEye(offsetX, offsetY, offsetZ);
 	
 	DrawMouth(0,0,0);
