@@ -1,6 +1,6 @@
 ![Cena do Bob Esponja em OpenGL, com o braço esquerdo acenando](docs/preview.png)
 
-# OpenGLSpongeBob
+# OpenGL
 
 Projeto para praticar OpenGL: uma cena 3D em C++ com [freeglut](https://freeglut.sourceforge.net/), onde o Bob Esponja é montado só com formas simples (cubos, cilindros, esferas e polígonos) e uma curva de Bézier para a boca, sobre um grid de referência com os eixos X, Y e Z.
 
