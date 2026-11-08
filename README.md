@@ -1,48 +1,48 @@
-![Cena do Bob Esponja em OpenGL, com o braço esquerdo acenando](docs/preview.png)
+![SpongeBob scene in OpenGL, with the left arm waving](docs/preview.png)
 
 # OpenGLSpongeBob
 
-Projeto para praticar OpenGL: uma cena 3D em C++ com [freeglut](https://freeglut.sourceforge.net/), onde o Bob Esponja é montado só com formas simples (cubos, cilindros, esferas e polígonos) e uma curva de Bézier para a boca, sobre um grid de referência com os eixos X, Y e Z.
+An OpenGL practice project: a 3D scene in C++ with [freeglut](https://freeglut.sourceforge.net/), where SpongeBob is built only from simple shapes (cubes, cylinders, spheres and polygons) and a Bézier curve for the mouth, over a reference grid with the X, Y and Z axes.
 
-## O que tem
+## Features
 
-- **Personagem articulado:** o braço esquerdo balança em uma cadeia ombro, cotovelo, pulso e mão com dedos. O braço direito usa a mesma montagem em pose fixa.
-- **Animação por tempo:** a pose do braço vem do relógio, então a velocidade é a mesma em qualquer taxa de quadros.
-- **Câmera orbital com pivô móvel:** orbitar, mover e dar zoom, sempre em torno do ponto que você moveu.
-- **Painel de controles na janela:** lista os atalhos e pode ser ocultado.
-- **Formas coloridas ao fundo:** trocam de cor a cada 1 segundo.
+- **Articulated character:** the left arm swings through a shoulder, elbow, wrist and hand with fingers chain. The right arm uses the same setup in a fixed pose.
+- **Time-based animation:** the arm pose comes from the clock, so speed is the same at any frame rate.
+- **Orbital camera with a movable pivot:** orbit, pan and zoom, always around the point you moved.
+- **On-screen controls panel:** lists the shortcuts and can be hidden.
+- **Colored shapes in the background:** they change color every 1 second.
 
-## Controles
+## Controls
 
-| Entrada | Ação |
+| Input | Action |
 | --- | --- |
-| Mouse esquerdo + arrastar | Orbitar ao redor do personagem |
-| Mouse direito + arrastar | Mover a câmera (o ponto de giro acompanha) |
-| Scroll ou `W` / `S` | Zoom |
-| Setas | Orbitar |
-| `A` / `D` / `Q` / `E` | Mover a câmera (o ponto de giro acompanha) |
-| `R` | Resetar a câmera |
-| `H` | Mostrar ou ocultar o painel de controles |
-| `ESC` | Sair |
+| Left mouse + drag | Orbit around the character |
+| Right mouse + drag | Pan the camera (the pivot follows) |
+| Scroll or `W` / `S` | Zoom |
+| Arrow keys | Orbit |
+| `A` / `D` / `Q` / `E` | Pan the camera (the pivot follows) |
+| `R` | Reset the camera |
+| `H` | Show or hide the controls panel |
+| `ESC` | Quit |
 
-O painel de controles aparece no canto da janela ao abrir o programa.
+The controls panel appears in the corner of the window when the program starts.
 
-## Compilar
+## Building
 
-Projeto C++ com freeglut. No Dev-C++, abra `Preview.dev`; o linker usa `-lopengl32 -lfreeglut -lglu32`.
+C++ project using freeglut. In Dev-C++, open `Preview.dev`; the linker uses `-lopengl32 -lfreeglut -lglu32`.
 
-Com o compilador da Microsoft (MSVC), defina `_USE_MATH_DEFINES` (o código usa `M_PI`) e crie um arquivo `glut.h` que inclua `<freeglut.h>`, já que o código inclui os dois cabeçalhos pelo nome.
+With the Microsoft compiler (MSVC), define `_USE_MATH_DEFINES` (the code uses `M_PI`) and create a `glut.h` file that includes `<freeglut.h>`, since the code includes both headers by name.
 
-## Arquivos
+## Files
 
-| Arquivo | Função |
+| File | Role |
 | --- | --- |
-| `main.cpp` | Janela, projeção, variáveis globais e laço principal |
-| `controllers.h` | Câmera (orbitar, mover, zoom, pivô), mouse e teclado |
-| `hud.h` | Painel de controles em 2D |
-| `drawCall.h` | Chamada de desenho de cada quadro |
-| `tickCall.h` | Temporizador de 16 ms que atualiza a animação |
-| `bobSponge.h` | Personagem, braços e a animação do braço |
-| `basicObjects.h` | Formas geométricas coloridas ao fundo |
-| `colorPicker.h` | Sorteio de cores, uma vez por segundo |
-| `grid.h` | Grid de referência e eixos |
+| `main.cpp` | Window, projection, global variables and main loop |
+| `controllers.h` | Camera (orbit, pan, zoom, pivot), mouse and keyboard |
+| `hud.h` | 2D controls panel |
+| `drawCall.h` | Per-frame draw call |
+| `tickCall.h` | 16 ms timer that updates the animation |
+| `bobSponge.h` | Character, arms and the arm animation |
+| `basicObjects.h` | Colored geometric shapes in the background |
+| `colorPicker.h` | Random colors, once per second |
+| `grid.h` | Reference grid and axes |
