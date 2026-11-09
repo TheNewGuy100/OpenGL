@@ -1,6 +1,6 @@
 ![SpongeBob scene in OpenGL, with the left arm waving](docs/preview.png)
 
-# OpenGLSpongeBob
+# OpenGL
 
 An OpenGL practice project: a 3D scene in C++ with [freeglut](https://freeglut.sourceforge.net/), where SpongeBob is built only from simple shapes (cubes, cylinders, spheres and polygons) and a Bézier curve for the mouth, over a reference grid with the X, Y and Z axes.
 
